@@ -1,19 +1,16 @@
 package ovchip.domain;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Reiziger {
     private int id;
     private String voorletters;
     private String tussenvoegsel;
     private String achternaam;
-    private Date geboortedatum;
+    private LocalDate geboortedatum;
 
-    // Constructor zonder parameters
-    public Reiziger() {}
-
-    // Constructor met parameters
-    public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
+    // Constructor
+    public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, LocalDate geboortedatum) {
         this.id = id;
         this.voorletters = voorletters;
         this.tussenvoegsel = tussenvoegsel;
@@ -21,7 +18,7 @@ public class Reiziger {
         this.geboortedatum = geboortedatum;
     }
 
-    // Getters en setters
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -54,23 +51,18 @@ public class Reiziger {
         this.achternaam = achternaam;
     }
 
-    public Date getGeboortedatum() {
+    public LocalDate getGeboortedatum() {
         return geboortedatum;
     }
 
-    public void setGeboortedatum(Date geboortedatum) {
+    public void setGeboortedatum(LocalDate geboortedatum) {
         this.geboortedatum = geboortedatum;
     }
 
-    public String getNaam() {
-        if (tussenvoegsel != null && !tussenvoegsel.isEmpty()) {
-            return voorletters + ". " + tussenvoegsel + " " + achternaam;
-        }
-        return voorletters + ". " + achternaam;
-    }
-
+    // toString methode
     @Override
     public String toString() {
-        return "Reiziger #" + id + ": " + getNaam() + " (" + geboortedatum + ")";
+        return String.format("Reiziger{id=%d, voorletters='%s', tussenvoegsel='%s', achternaam='%s', geboortedatum=%s}",
+                id, voorletters, tussenvoegsel != null ? tussenvoegsel : "", achternaam, geboortedatum.toString());
     }
 }

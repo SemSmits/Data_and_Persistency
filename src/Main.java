@@ -1,13 +1,32 @@
 import java.sql.*;
+
 public class Main {
 
     public static void main(String[] args) throws SQLException {
-        testConnection();
+        Connection con = startConnection();
+        try {
+            testConnection(con);
+        } finally {
+            closeConnection(con);
+        }
     }
 
-    private static void testConnection() throws SQLException {
+    // Maakt verbinding met de database
+    private static Connection startConnection() throws SQLException {
         String url = "jdbc:postgresql://localhost/ovchip?user=postgres&password=Spidermanenbatman2023";
-        Connection con = DriverManager.getConnection(url);
+        return DriverManager.getConnection(url);
+    }
+
+    // Sluit de connectie met de database
+    private static void closeConnection(Connection con) throws SQLException {
+        if (con != null) {
+            con.close();
+        }
+    }
+
+
+    // Test de connectie met de database door middel van een query
+    private static void testConnection(Connection con) throws SQLException {
         String query = "SELECT * FROM reiziger;";
         PreparedStatement statement = con.prepareStatement(query);
         ResultSet set = statement.executeQuery();
@@ -28,6 +47,5 @@ public class Main {
 
             System.out.printf("#%d: %s (%s)\n", reizigerId, volledigeNaam, geboortedatum);
         }
-        con.close();
     }
 }

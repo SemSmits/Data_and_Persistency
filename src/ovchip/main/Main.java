@@ -1,3 +1,5 @@
+package ovchip.main;
+
 import java.sql.*;
 
 public class Main {

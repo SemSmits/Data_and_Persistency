@@ -15,89 +15,77 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     }
 
     @Override
-    public boolean save(Reiziger reiziger) {
-        try {
-            String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setInt(1, reiziger.getId());
-            ps.setString(2, reiziger.getVoorletters());
-            ps.setString(3, reiziger.getTussenvoegsel());
-            ps.setString(4, reiziger.getAchternaam());
-            ps.setDate(5, Date.valueOf(reiziger.getGeboortedatum()));
+    public boolean save(Reiziger reiziger) throws SQLException {
 
-            int rows = ps.executeUpdate();
-            ps.close();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, reiziger.getId());
+        ps.setString(2, reiziger.getVoorletters());
+        ps.setString(3, reiziger.getTussenvoegsel());
+        ps.setString(4, reiziger.getAchternaam());
+        ps.setDate(5, Date.valueOf(reiziger.getGeboortedatum()));
+
+        int rows = ps.executeUpdate();
+        ps.close();
+        return rows > 0;
+
     }
 
     @Override
-    public boolean update(Reiziger reiziger) {
-        try {
-            String query = "UPDATE reiziger SET voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? WHERE reiziger_id = ?";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, reiziger.getVoorletters());
-            ps.setString(2, reiziger.getTussenvoegsel());
-            ps.setString(3, reiziger.getAchternaam());
-            ps.setDate(4, Date.valueOf(reiziger.getGeboortedatum()));
-            ps.setInt(5, reiziger.getId());
+    public boolean update(Reiziger reiziger) throws SQLException {
 
-            int rows = ps.executeUpdate();
-            ps.close();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        String query = "UPDATE reiziger SET voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? WHERE reiziger_id = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setString(1, reiziger.getVoorletters());
+        ps.setString(2, reiziger.getTussenvoegsel());
+        ps.setString(3, reiziger.getAchternaam());
+        ps.setDate(4, Date.valueOf(reiziger.getGeboortedatum()));
+        ps.setInt(5, reiziger.getId());
+
+        int rows = ps.executeUpdate();
+        ps.close();
+        return rows > 0;
+
     }
 
     @Override
-    public boolean delete(Reiziger reiziger) {
-        try {
-            String query = "DELETE FROM reiziger WHERE reiziger_id = ?";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setInt(1, reiziger.getId());
+    public boolean delete(Reiziger reiziger) throws SQLException {
 
-            int rows = ps.executeUpdate();
-            ps.close();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        String query = "DELETE FROM reiziger WHERE reiziger_id = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, reiziger.getId());
+
+        int rows = ps.executeUpdate();
+        ps.close();
+        return rows > 0;
+
     }
 
     @Override
-    public Reiziger findById(int id) {
-        try {
-            String query = "SELECT * FROM reiziger WHERE reiziger_id = ?";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+    public Reiziger findById(int id) throws SQLException {
 
-            if (rs.next()) {
-                int reizigerId = rs.getInt("reiziger_id");
-                String voorletters = rs.getString("voorletters");
-                String tussenvoegsel = rs.getString("tussenvoegsel");
-                String achternaam = rs.getString("achternaam");
-                LocalDate geboortedatum = rs.getDate("geboortedatum").toLocalDate();
+        String query = "SELECT * FROM reiziger WHERE reiziger_id = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
 
-                Reiziger reiziger = new Reiziger(reizigerId, voorletters, tussenvoegsel, achternaam, geboortedatum);
-                rs.close();
-                ps.close();
-                return reiziger;
-            }
+        if (rs.next()) {
+            int reizigerId = rs.getInt("reiziger_id");
+            String voorletters = rs.getString("voorletters");
+            String tussenvoegsel = rs.getString("tussenvoegsel");
+            String achternaam = rs.getString("achternaam");
+            LocalDate geboortedatum = rs.getDate("geboortedatum").toLocalDate();
 
+            Reiziger reiziger = new Reiziger(reizigerId, voorletters, tussenvoegsel, achternaam, geboortedatum);
             rs.close();
             ps.close();
-            return null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            return reiziger;
         }
+
+        rs.close();
+        ps.close();
+        return null;
+
     }
 
     @Override
@@ -106,57 +94,53 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     }
 
     @Override
-    public List<Reiziger> findByGbdatum(LocalDate geboortedatum) {
+    public List<Reiziger> findByGbdatum(LocalDate geboortedatum) throws SQLException {
         List<Reiziger> reizigers = new ArrayList<>();
-        try {
-            String query = "SELECT * FROM reiziger WHERE geboortedatum = ?";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setDate(1, Date.valueOf(geboortedatum));
-            ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                int reizigerId = rs.getInt("reiziger_id");
-                String voorletters = rs.getString("voorletters");
-                String tussenvoegsel = rs.getString("tussenvoegsel");
-                String achternaam = rs.getString("achternaam");
-                LocalDate geboortedatumReiziger = rs.getDate("geboortedatum").toLocalDate();
+        String query = "SELECT * FROM reiziger WHERE geboortedatum = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setDate(1, Date.valueOf(geboortedatum));
+        ResultSet rs = ps.executeQuery();
 
-                Reiziger reiziger = new Reiziger(reizigerId, voorletters, tussenvoegsel, achternaam, geboortedatumReiziger);
-                reizigers.add(reiziger);
-            }
+        while (rs.next()) {
+            int reizigerId = rs.getInt("reiziger_id");
+            String voorletters = rs.getString("voorletters");
+            String tussenvoegsel = rs.getString("tussenvoegsel");
+            String achternaam = rs.getString("achternaam");
+            LocalDate geboortedatumReiziger = rs.getDate("geboortedatum").toLocalDate();
 
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Reiziger reiziger = new Reiziger(reizigerId, voorletters, tussenvoegsel, achternaam, geboortedatumReiziger);
+            reizigers.add(reiziger);
         }
+
+        rs.close();
+        ps.close();
+
         return reizigers;
     }
 
     @Override
-    public List<Reiziger> findAll() {
+    public List<Reiziger> findAll() throws SQLException {
         List<Reiziger> reizigers = new ArrayList<>();
-        try {
-            String query = "SELECT * FROM reiziger";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                int reizigerId = rs.getInt("reiziger_id");
-                String voorletters = rs.getString("voorletters");
-                String tussenvoegsel = rs.getString("tussenvoegsel");
-                String achternaam = rs.getString("achternaam");
-                LocalDate geboortedatum = rs.getDate("geboortedatum").toLocalDate();
+        String query = "SELECT * FROM reiziger";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
 
-                Reiziger reiziger = new Reiziger(reizigerId, voorletters, tussenvoegsel, achternaam, geboortedatum);
-                reizigers.add(reiziger);
-            }
+        while (rs.next()) {
+            int reizigerId = rs.getInt("reiziger_id");
+            String voorletters = rs.getString("voorletters");
+            String tussenvoegsel = rs.getString("tussenvoegsel");
+            String achternaam = rs.getString("achternaam");
+            LocalDate geboortedatum = rs.getDate("geboortedatum").toLocalDate();
 
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Reiziger reiziger = new Reiziger(reizigerId, voorletters, tussenvoegsel, achternaam, geboortedatum);
+            reizigers.add(reiziger);
         }
+
+        rs.close();
+        ps.close();
+
         return reizigers;
     }
 }

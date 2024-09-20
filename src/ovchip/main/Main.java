@@ -9,30 +9,25 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Connection conn = null;
-        try {
-            // Start verbinding met de database
-            conn = startConnection();
 
-            // Test de verbinding door een query uit te voeren
-            testConnection(conn);
+        // Start verbinding met de database
+        conn = startConnection();
 
-            // Maak een ReizigerDAO aan en test de CRUD-operaties
-            ReizigerDAO reizigerDAO = new ReizigerDAOPsql(conn);
-            testReizigerDAO(reizigerDAO);
+        // Test de verbinding door een query uit te voeren
+        testConnection(conn);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                // Sluit de verbinding met de database
-                closeConnection(conn);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        // Maak een ReizigerDAO aan en test de CRUD-operaties
+        ReizigerDAO reizigerDAO = new ReizigerDAOPsql(conn);
+        testReizigerDAO(reizigerDAO);
+
+
+        // Sluit de verbinding met de database
+        closeConnection(conn);
+
     }
+
 
     // Maakt verbinding met de database
     private static Connection startConnection() throws SQLException {
@@ -74,7 +69,7 @@ public class Main {
 
     /**
      * P2. Reiziger DAO: persistentie van een klasse
-     *
+     * <p>
      * Deze methode test de CRUD-functionaliteit van de Reiziger DAO
      *
      * @throws SQLException
@@ -83,7 +78,8 @@ public class Main {
         System.out.println("\n---------- Test ReizigerDAO -------------");
 
         // Haal alle reizigers op uit de database
-        List<Reiziger> reizigers = rdao.findAll();
+        List<Reiziger> reizigers = null;
+        reizigers = rdao.findAll();
         System.out.println("[Test] ReizigerDAO.findAll() geeft de volgende reizigers:");
         for (Reiziger r : reizigers) {
             System.out.println(r);
@@ -102,7 +98,8 @@ public class Main {
         System.out.println("[Test] Update reiziger 77 (Sietske Boers) achternaam naar 'Jansen'");
         sietske.setAchternaam("Jansen");
         rdao.update(sietske);
-        Reiziger updatedReiziger = rdao.findById(77);
+        Reiziger updatedReiziger = null;
+        updatedReiziger = rdao.findById(77);
         System.out.println("Geüpdatete reiziger: " + updatedReiziger);
         System.out.println();
 
@@ -113,7 +110,8 @@ public class Main {
         System.out.println("Aantal reizigers na verwijderen: " + reizigers.size() + "\n");
 
         // Controleer of reiziger 77 succesvol is verwijderd
-        Reiziger deletedReiziger = rdao.findById(77);
+        Reiziger deletedReiziger = null;
+        deletedReiziger = rdao.findById(77);
         if (deletedReiziger == null) {
             System.out.println("Reiziger 77 is succesvol verwijderd.");
         } else {
@@ -121,3 +119,7 @@ public class Main {
         }
     }
 }
+
+
+
+
